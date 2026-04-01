@@ -19,15 +19,34 @@ interface MainContentProps {
     createdAt: Date;
     updatedAt: Date;
   };
+  introQuote?: {
+    quote: string;
+    author: string;
+  };
 }
 
-export function MainContent({ user, project }: MainContentProps) {
+export function MainContent({ user, project, introQuote }: MainContentProps) {
   const [selectedMaterials, setSelectedMaterials] = useState<string[]>([]);
+
+  const existingMessages = project?.messages ?? [];
+
+  const introMessage: Message | null =
+    introQuote && existingMessages.length === 0
+      ? {
+          id: "intro",
+          role: "assistant",
+          content: `Hi! I'm your **AI Study Assistant**, powered by Llama 3.3 70B.\n\nBefore we dive in, here's something to keep you going:\n\n> "${introQuote.quote}"\n>\n> — ${introQuote.author}\n\nSelect your study materials above, then ask me anything — I can explain concepts, answer questions, or quiz you.`,
+        }
+      : null;
+
+  const initialMessages = introMessage
+    ? [introMessage, ...existingMessages]
+    : existingMessages;
 
   return (
     <ChatProvider
       projectId={project?.id}
-      initialMessages={project?.messages ?? []}
+      initialMessages={initialMessages}
       selectedMaterials={selectedMaterials}
     >
       <div className="h-screen w-screen overflow-hidden bg-neutral-50 flex flex-col">

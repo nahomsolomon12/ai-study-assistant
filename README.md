@@ -1,37 +1,59 @@
-# UIGen
+# AI Study Assistant
 
-AI-powered React component generator with live preview.
+An AI-powered study assistant that answers questions, explains concepts, and quizzes students based on your own markdown study materials.
+
+## Stack
+
+| Layer | Technology |
+|---|---|
+| Framework | Next.js 15 (App Router), React 19, TypeScript |
+| Styling | Tailwind CSS v4, Radix UI |
+| AI / LLM | [Groq API](https://console.groq.com) — `llama-3.3-70b-versatile` |
+| AI SDK | Vercel AI SDK (`ai`, `@ai-sdk/groq`) |
+| Database | Prisma 6 + SQLite |
+| Auth | JWT (`jose`) + bcrypt |
+| Testing | Vitest + Testing Library |
 
 ## Prerequisites
 
 - Node.js 18+
-- npm
+- A [Groq API key](https://console.groq.com) (free tier available)
 
 ## Setup
 
-1. **Optional** Edit `.env` and add your Anthropic API key:
-
-```
-ANTHROPIC_API_KEY=your-anthropic-api-key-here
-```
-
-The project will run without an API key. Rather than using a LLM to generate components, static code will be returned instead.
-
-2. Install dependencies and initialize database
+1. **Clone and install**
 
 ```bash
+git clone <repo-url>
+cd ai-study-assistant
 npm run setup
 ```
 
-This command will:
+`npm run setup` installs dependencies, generates the Prisma client, and runs database migrations.
 
-- Install all dependencies
-- Generate Prisma client
-- Run database migrations
+2. **Configure environment variables**
 
-## Running the Application
+Create a `.env` file in the project root:
 
-### Development
+```env
+GROQ_API_KEY=your_groq_api_key_here
+JWT_SECRET=your_random_secret_here
+```
+
+3. **Add study materials**
+
+Create a `study-materials/` directory at the project root and drop in `.md` files — one file per topic:
+
+```
+study-materials/
+  biology-chapter-3.md
+  us-history.md
+  calculus-derivatives.md
+```
+
+The filename becomes the topic label shown in the UI (hyphens replaced with spaces, title-cased).
+
+4. **Run the app**
 
 ```bash
 npm run dev
@@ -41,27 +63,31 @@ Open [http://localhost:3000](http://localhost:3000)
 
 ## Usage
 
-1. Sign up or continue as anonymous user
-2. Describe the React component you want to create in the chat
-3. View generated components in real-time preview
-4. Switch to Code view to see and edit the generated files
-5. Continue iterating with the AI to refine your components
+1. Sign up or continue as a guest (anonymous)
+2. Select which study materials to load as context
+3. Chat with the assistant — ask questions, request explanations, or ask to be quizzed
+4. Projects (chat history) are saved per user account
 
-## Features
+## How It Works
 
-- AI-powered component generation using Claude
-- Live preview with hot reload
-- Virtual file system (no files written to disk)
-- Syntax highlighting and code editor
-- Component persistence for registered users
-- Export generated code
+- Study materials are `.md` files loaded server-side on each request
+- Selected files are injected into the system prompt as context
+- The Groq API streams responses back in real-time via the Vercel AI SDK
+- Chat history is persisted to SQLite (registered users only)
 
-## Tech Stack
+## Scripts
 
-- Next.js 15 with App Router
-- React 19
-- TypeScript
-- Tailwind CSS v4
-- Prisma with SQLite
-- Anthropic Claude AI
-- Vercel AI SDK
+```bash
+npm run dev        # Start dev server (Turbopack)
+npm run build      # Production build
+npm run test       # Run unit tests
+npm run db:reset   # Reset the database
+```
+
+## Environment Variables
+
+| Variable | Required | Description |
+|---|---|---|
+| `GROQ_API_KEY` | Yes | Groq API key for LLM inference |
+| `JWT_SECRET` | Recommended | Secret for signing session tokens |
+| `DATABASE_URL` | Optional | SQLite path (defaults to `./prisma/dev.db`) |

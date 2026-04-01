@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node -e \"const fs=require('fs');const quotes=JSON.parse(fs.readFileSync('c:/Users/HCC_Student/Desktop/ai-study-assistant/quotes.json','utf8'));const q=quotes[Math.floor(Math.random()*quotes.length)];const msg='Your AI Study Assistant is ready — powered by Llama 3.3 70B via Groq.\\n\\n\\\"'+q.quote+'\\\"\\n\\n— '+q.author;console.log(JSON.stringify({systemMessage:msg}));\"",
+            "statusMessage": "Loading your motivational quote..."
+          }
+        ]
+      }
+    ]
+  }
+}
