@@ -1,4 +1,4 @@
-# AI Study Assistant
+# ASA (AI Study Assistant)
 
 An AI-powered study assistant that answers questions, explains concepts, and quizzes students based on your own markdown study materials.
 
